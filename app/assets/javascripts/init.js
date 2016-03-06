@@ -2,63 +2,56 @@ $(function() {
 
     var margin = {top: 20, right: 30, bottom: 30, left: 40},
         width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        height = 700 - margin.top - margin.bottom;
 
-    var y = d3.scale.linear()
-        .range([height, 0]);
-
-    var x = d3.scale.ordinal()
-        .rangeRoundBands([0, width], 0.1)
-
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient("bottom");
-
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left")
-        .ticks(10, "%");
 
     var chart = d3.select(".chart")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
 
-  d3.csv("/data.csv", type, function(error, data) {
-    x.domain(data.map(function(d) { return d.letter; }));
-    y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+    var maxRadius = 70;
 
-    var barWidth = width / data.length
+
+  d3.csv("/data.csv", function(error, data) {
+    var states = data.map(function(d) { return d.state1 }).concat(data.map(function(d) { return d.state2 }));
+
+    var unique_states = d3.map(states, function(d) { return d; }).values();
+
+    var dataTree = {
+        children: unique_states.map(function(d) { return { name: d} } )
+    };
+
+    // size scale for data
+
+    // determine the appropriate radius for the circle
+    var roughCircumference = 1600,
+        radius = roughCircumference / (Math.PI * 2);
+
+    var tree = d3.layout.tree()
+        .size([360, radius]);
+
+    var nodes = tree.nodes(dataTree);
     // debugger
-    chart.append("g")
-         .attr("class", "x axis")
-         .attr("transform", "translate(0," + height + ")")
-         .call(xAxis);
 
-    chart.append("g")
-       .attr("class", "y axis")
-       .call(yAxis)
-     .append("text")
-       .attr("transform", "rotate(-90)")
-       .attr("y", 6)
-       .attr("dy", ".71em")
-       .style("text-anchor", "end")
-       .text("Frequency");
+    var circle = chart.selectAll("g")
+      .data(nodes.slice(1))
+    .enter().append("g")
+      .attr("transform", function(d) {
+        return "rotate(" + (d.x - 90) + ") translate(" + d.y + ")"; })
+
+    circle.append("circle")
+      .attr("class", "circle")
+      .attr("r", 10)
+
+    circle.append("text")
+      .attr("class", "circle")
+      .attr("text-anchor", "middle")
+      .attr("dx", "1.5em")
+      .text(function(d) { return d.name })
 
 
-    chart.selectAll(".bar")
-      .data(data)
-    .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d) { return x(d.letter); })
-      .attr("y", function(d) { return y(d.frequency); })
-      .attr("height", function(d) { return height - y(d.frequency); })
-      .attr("width", x.rangeBand());
   });
 
-  function type(d) {
-    d.frequency = +d.frequency; // coerce to number
-    return d;
-  }
 });

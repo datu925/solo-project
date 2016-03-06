@@ -24,7 +24,7 @@
    color: white;
  }*/
 
-
+/*
  .bar {
   fill: steelblue;
 }
@@ -42,4 +42,9 @@
 
 .x.axis path {
   display: none;
+}*/
+
+
+.circle {
+  fill: steelblue;
 }
