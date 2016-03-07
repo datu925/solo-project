@@ -48,3 +48,7 @@
 .circle {
   fill: steelblue;
 }
+
+.fade {
+  opacity: 0.1;
+}
