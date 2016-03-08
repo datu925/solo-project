@@ -41,6 +41,8 @@ Let's look at these in turn.
 
 SVGs stand for Scalable Vector Graphics. Unlike images like PNGs or JPGs, which are composed of pixels and typically lose quality when they are scaled up, SVGs are composed of mathematically-defined shapes - basically, you define the mathematical rules, and they hold regardless of the zoom. SVGs are supported by all major browsers to some extent, and their flexibility makes them a good choice for visualizations.
 
+<img src="drawing.jpg" style="width: 70%">
+
 But, SVGs have their own rules that are different from other HTML elements. You can style them with CSS, but certain properties are different; for instance, an SVG shape usually has a fill instead of a background-color, and a stroke instead of a line color. They have a different kind of a div called a group (abbreviated g), and my experience was that generally you need to do a lot more math to use them than you would for using and positioning HTML elements.
 
 The good news is that you don't *have* to use SVGs in order to use d3 - the library works with HTML elements as well. But some of the cooler charts are much better suited to SVG, so I spent a good part of my time trying to wrap my head around those.
